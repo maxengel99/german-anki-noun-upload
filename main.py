@@ -27,8 +27,16 @@ current_gender_noun_card_ids = anki_controller.invoke("findCards", { "query": '"
 current_gender_noun_cards_info = anki_controller.invoke("cardsInfo", { "cards": current_gender_noun_card_ids['result']})
 words_to_upload_to_gender = word_processor.get_words_to_upload(found_nouns, current_gender_noun_cards_info)
 
+def get_full_word(word, gender):
+    if gender == 'M':
+        return "der " + word
+    elif gender == 'F':
+        return "die " + word
+    else:
+        return "das " + word
+
 for word, gender in words_to_upload_to_gender.items():
-    fields = { "Noun": word, "Gender": gender }
+    fields = { "Noun": word, "Gender": gender, "Full Word": get_full_word(word, gender) }
     deck_name = "German::German Gender Nouns"
     model_name = "German Noun Gender"
     json_args = {
@@ -54,8 +62,7 @@ for word in not_found_nouns:
 
     if word not in current_gender_nouns_set:     
         gender = easygui.buttonbox("The word '" + word + "' was not found. Please pick the gender of the this noun. https://www.collinsdictionary.com/us/dictionary/german-english/", "", button_list)
-        print(gender)
-        fields = { "Noun": word, "Gender": answer_to_field[gender] }
+        fields = { "Noun": word, "Gender": answer_to_field[gender], "Full Word": get_full_word(word, answer_to_field[gender])  }
         deck_name = "German::German Gender Nouns"
         model_name = "German Noun Gender"
         json_args = {
