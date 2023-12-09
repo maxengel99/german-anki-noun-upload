@@ -16,13 +16,6 @@ anki_controller = AnkiController()
 
 current_card_ids = anki_controller.invoke("findCards", { "query": '"deck:German::German Class Words" tag:noun'})
 current_cards_info = anki_controller.invoke("cardsInfo", { "cards": current_card_ids['result']})
-def get_full_word(word, gender):
-    if gender == 'M':
-        return "der " + word
-    elif gender == 'F':
-        return "die " + word
-    else:
-        return "das " + word
 
 visited = set()
 for card_info in current_cards_info["result"]:
@@ -34,8 +27,9 @@ for card_info in current_cards_info["result"]:
     print(word)
 
     gender = card_info["fields"]["Gender"]["value"]
+    audio = card_info["fields"]["German pronunciation"]["value"]
     
-    fields = { "Noun": word, "Gender": gender, "Full Word": get_full_word(word, gender) }
+    fields = { "Noun": word, "Gender": gender, "Audio": audio }
     deck_name = "German::German Gender Nouns"
     model_name = "German Noun Gender"
     json_args = {
